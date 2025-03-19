@@ -1,0 +1,140 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.11, pytest-8.3.4, pluggy-1.5.0
+rootdir: /Users/sanideshmukh/Desktop/EE 150/EE150_PS3
+configfile: pyproject.toml
+plugins: json-report-1.5.0, metadata-3.1.1
+collected 4 items
+
+tests/attention_tests.py FF..                                            [100%]
+
+=================================== FAILURES ===================================
+__________________________ test_SelfAttention[simple] __________________________
+
+x = tensor([[[1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],
+         [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],
+         [1., 1....., 1., 1., 1.],
+         [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],
+         [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]]])
+d_model = tensor(10)
+reference = tensor([[[-0.6815, -0.2329, -0.3179, -0.5190, -0.1084, -0.0871, -0.7160,
+          -1.5621, -0.6802,  1.1381],
+       ...1381],
+         [-0.6815, -0.2329, -0.3179, -0.5190, -0.1084, -0.0871, -0.7160,
+          -1.5621, -0.6802,  1.1381]]])
+
+    @pytest.mark.parametrize(
+        "x, d_model, reference",
+        [
+            pytest.param(
+                *load_test_data_attn("simple_attn"),
+                id="simple",
+            ),
+            pytest.param(
+                *load_test_data_attn("random_attn"),
+                id="random",
+            ),
+        ]
+    )
+    def test_SelfAttention(x, d_model, reference):
+        seed_everything()
+        with torch.no_grad():
+            self_attention = SelfAttention(d_model)
+>           output = self_attention(x)
+
+tests/attention_tests.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.11/site-packages/torch/nn/modules/module.py:1739: in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+.venv/lib/python3.11/site-packages/torch/nn/modules/module.py:1750: in _call_impl
+    return forward_call(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SelfAttention(
+  (W_q): Linear(in_features=10, out_features=10, bias=True)
+  (W_k): Linear(in_features=10, out_features=10, bias=True)
+  (W_v): Linear(in_features=10, out_features=10, bias=True)
+  (softmax): Softmax(dim=-1)
+)
+x = tensor([[[1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],
+         [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],
+         [1., 1....., 1., 1., 1.],
+         [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],
+         [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]]])
+
+    def forward(self, x):
+        Q = self.W_q(x)
+        K = self.W_k(x)
+        V = self.W_v(x)
+    
+        output = (torch.matmul(Q, K.transpose(-2, -1))) / ((self.d_model) ** 0.5)
+        output = self.softmax(output)
+>       output = torch.matmul(output.transpose, torch.matmul(x, V))
+E       TypeError: matmul(): argument 'input' (position 1) must be Tensor, not builtin_function_or_method
+
+psthree/attention.py:39: TypeError
+__________________________ test_SelfAttention[random] __________________________
+
+x = tensor([[[1., 1., 1.,  ..., 1., 1., 1.],
+         [1., 1., 1.,  ..., 1., 1., 1.],
+         [1., 1., 1.,  ..., 1., 1., ...    [1., 1., 1.,  ..., 1., 1., 1.],
+         [1., 1., 1.,  ..., 1., 1., 1.],
+         [1., 1., 1.,  ..., 1., 1., 1.]]])
+d_model = tensor(128)
+reference = tensor([[[-0.6027, -0.0387,  0.4190,  ..., -0.0893, -0.1998,  1.2039],
+         [-0.6027, -0.0387,  0.4190,  ..., -0.0...87,  0.4190,  ..., -0.0893, -0.1998,  1.2039],
+         [-0.6027, -0.0387,  0.4190,  ..., -0.0893, -0.1998,  1.2039]]])
+
+    @pytest.mark.parametrize(
+        "x, d_model, reference",
+        [
+            pytest.param(
+                *load_test_data_attn("simple_attn"),
+                id="simple",
+            ),
+            pytest.param(
+                *load_test_data_attn("random_attn"),
+                id="random",
+            ),
+        ]
+    )
+    def test_SelfAttention(x, d_model, reference):
+        seed_everything()
+        with torch.no_grad():
+            self_attention = SelfAttention(d_model)
+>           output = self_attention(x)
+
+tests/attention_tests.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.11/site-packages/torch/nn/modules/module.py:1739: in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+.venv/lib/python3.11/site-packages/torch/nn/modules/module.py:1750: in _call_impl
+    return forward_call(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SelfAttention(
+  (W_q): Linear(in_features=128, out_features=128, bias=True)
+  (W_k): Linear(in_features=128, out_features=128, bias=True)
+  (W_v): Linear(in_features=128, out_features=128, bias=True)
+  (softmax): Softmax(dim=-1)
+)
+x = tensor([[[1., 1., 1.,  ..., 1., 1., 1.],
+         [1., 1., 1.,  ..., 1., 1., 1.],
+         [1., 1., 1.,  ..., 1., 1., ...    [1., 1., 1.,  ..., 1., 1., 1.],
+         [1., 1., 1.,  ..., 1., 1., 1.],
+         [1., 1., 1.,  ..., 1., 1., 1.]]])
+
+    def forward(self, x):
+        Q = self.W_q(x)
+        K = self.W_k(x)
+        V = self.W_v(x)
+    
+        output = (torch.matmul(Q, K.transpose(-2, -1))) / ((self.d_model) ** 0.5)
+        output = self.softmax(output)
+>       output = torch.matmul(output.transpose, torch.matmul(x, V))
+E       RuntimeError: Expected size for first two dimensions of batch2 tensor to be: [16, 128] but got: [16, 30].
+
+psthree/attention.py:39: RuntimeError
+=========================== short test summary info ============================
+FAILED tests/attention_tests.py::test_SelfAttention[simple] - TypeError: matm...
+FAILED tests/attention_tests.py::test_SelfAttention[random] - RuntimeError: E...
+========================= 2 failed, 2 passed in 0.91s ==========================

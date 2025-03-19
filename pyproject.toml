@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools", "wheel", "cmake"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "psthree"
+version = "0.1.0"
+requires-python = ">=3.9, <3.12"
+dependencies = [
+    "tensorflow-datasets",
+    "tensorflow",
+    "torch",
+    "numpy",
+    "Pillow",
+    "matplotlib",
+    "torchvision",
+    "pytest",
+    "pytest-json-report",
+    "colorama",
+    "nltk"
+]
+
+[tool.setuptools]
+packages = ["psthree"]
